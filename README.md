@@ -3,7 +3,7 @@
 UrbanBot is an end-to-end **AI-powered Smart City Intelligence System** designed to monitor, analyze, and assist urban infrastructure management in real time.
 
 It integrates **Computer Vision, Machine Learning, NLP, MySQL, and LLM-based analytics** into a unified **Streamlit dashboard** to support data-driven decision-making for smart cities.
-![UrbanBot Dashboard](eg_image/dashboard.png)
+
 ## 🚀 Key Highlights
 
 - 🧠 Multi-AI system (Computer Vision + ML + NLP + LLM)
@@ -23,7 +23,7 @@ Centralized command center displaying live city-wide metrics.
 - Average AQI  
 - Citizen complaint sentiment  
 
-![Smart City Dashboard](eg_image/dashboard.png)
+![Smart City Dashboard](assets/dashboard.png)
 ### 2️⃣ Accident Detection System
 
 AI-based road accident detection using YOLO.
@@ -33,7 +33,7 @@ AI-based road accident detection using YOLO.
 - Store logs in MySQL  
 - Email alerts for critical accidents  
 
-![Accident Detection](eg_image/Accident.png)
+![Accident Detection](assets/Accident.png)
 ### 3️⃣ Crowd Density Estimation
 
 Crowd analysis using deep learning to identify high-risk zones.
@@ -42,7 +42,7 @@ Crowd analysis using deep learning to identify high-risk zones.
 - Congestion level classification  
 - MySQL logging  
 
-![Crowd Density](eg_image/crowd.png)### 4️⃣ Air Quality AI Insights
+![Crowd Density](assets/crowd.png)### 4️⃣ Air Quality AI Insights
 
 Dataset-driven AQI prediction and monitoring.
 
@@ -50,7 +50,7 @@ Dataset-driven AQI prediction and monitoring.
 - Location-wise insights  
 - Health-level classification  
 
-![Air Quality](eg_image/AQI.png)
+![Air Quality](assets/AQI.png)
 ### 5️⃣ Road Damage Detection
 
 AI-based pothole and crack detection.
@@ -59,7 +59,7 @@ AI-based pothole and crack detection.
 - Severity classification  
 - Infrastructure maintenance support  
 
-![Road Damage](eg_image/road_image.png)
+![Road Damage](assets/road_image.png)
 ### 6️⃣ Citizen Complaint Analysis
 
 NLP-powered grievance handling system.
@@ -68,7 +68,7 @@ NLP-powered grievance handling system.
 - Sentiment analysis  
 - Priority routing  
 
-![Sentiment Analysis](eg_image/sentiment.png)
+![Sentiment Analysis](assets/sentiment.png)
 ### 7️⃣ UrbanBot AI Chat Assistant
 
 LLM-powered assistant for city administrators.
@@ -77,7 +77,7 @@ LLM-powered assistant for city administrators.
 - SQL-based reasoning  
 - Summarizes city insights  
 
-![Chatbot](eg_image/chatbot.png)
+![Chatbot](assets/chatbot.png)
 ## 🛠️ Tech Stack
 
 - **Frontend:** Streamlit  
