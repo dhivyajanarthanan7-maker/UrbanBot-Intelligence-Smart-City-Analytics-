@@ -1,0 +1,31 @@
+# virtual environments
+venv/
+.venv/
+
+# python cache
+__pycache__/
+*.pyc
+
+# secrets
+.env
+
+# datasets (CRITICAL)
+data/
+images/
+eg_image/
+uploads/
+
+# models
+models/
+*.pt
+*.pth
+*.h5
+*.pkl
+*.joblib
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# notebooks
+.ipynb_checkpoints/

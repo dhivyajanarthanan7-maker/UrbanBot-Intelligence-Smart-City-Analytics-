@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+pymysql
+sqlalchemy
+python-dotenv
+requests
+opencv-python
+ultralytics
+scikit-learn
