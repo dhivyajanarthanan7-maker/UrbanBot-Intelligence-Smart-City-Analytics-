@@ -9,7 +9,7 @@ from datetime import datetime
 # ================= CONFIG =================
 MODEL_PATH = "models/road_damage_best.pt"
 UPLOAD_DIR = "uploads/road_damage"
-CONF_THRESHOLD = 0.25
+CONF_THRESHOLD = 0.15
 
 DB_CONFIG = {
     "host": "localhost",
