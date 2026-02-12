@@ -2,22 +2,15 @@ import streamlit as st
 import cv2
 import numpy as np
 import os
-import mysql.connector
-from ultralytics import YOLO
 from datetime import datetime
+from db import get_connection
+from model_manager import get_model   # IMPORTANT (shared YOLO loader)
 
 # ================= CONFIG =================
 MODEL_PATH = "models/road_damage_best.pt"
 UPLOAD_DIR = "uploads/road_damage"
 CONF_THRESHOLD = 0.15
 
-DB_CONFIG = {
-    "host": "localhost",
-    "user": "urbanbot_user",
-    "password": "UrbanBot@123",
-    "database": "urban_bot"
-}
-# ========================================
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -61,24 +54,11 @@ CITY_DATA = {
         "Maddilapalem": (17.7389, 83.3146)
     }
 }
-# ============================================
 
-# ================= LOAD MODEL =================
-@st.cache_resource
-def load_model():
-    return YOLO(MODEL_PATH)
-
-model = load_model()
-# ============================================
-
-# ================= DB CONNECTION =================
-def get_connection():
-    return mysql.connector.connect(**DB_CONFIG)
-# ================================================
-
+# ================= UI LAYOUT =================
 left, right = st.columns([1.1, 1])
 
-# ================= LEFT PANEL =================
+# ================= INPUT PANEL =================
 with left:
     st.subheader("📥 Input Parameters")
 
@@ -96,20 +76,33 @@ with left:
 
     predict_btn = st.button("🚀 Detect Road Damage")
 
-# ================= RIGHT PANEL =================
+# ================= OUTPUT PANEL =================
 with right:
     st.subheader("📊 Detection Analysis")
 
     if uploaded_file and predict_btn:
+
+        # LOAD MODEL USING SHARED MANAGER (VERY IMPORTANT)
+        with st.spinner("Loading Road Damage AI model..."):
+            model = get_model(MODEL_PATH)
+
+        # Save image
         image_path = os.path.join(
             UPLOAD_DIR,
             f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
         )
+
         with open(image_path, "wb") as f:
             f.write(uploaded_file.read())
 
+        # Read image
         image = cv2.imread(image_path)
 
+        if image is None:
+            st.error("Invalid image file.")
+            st.stop()
+
+        # Predict
         results = model.predict(image, conf=CONF_THRESHOLD, save=False)
         boxes = results[0].boxes
         names = model.names
@@ -122,10 +115,11 @@ with right:
         damage_count = len(detected_classes)
         unique_damages = list(set(detected_classes))
 
+        # Show image
         annotated = results[0].plot()
         st.image(annotated, channels="BGR", use_container_width=True)
 
-        # ================= OPTION-2 SMART SEVERITY =================
+        # ================= SEVERITY LOGIC =================
         severity = "LOW"
 
         if "pothole" in unique_damages and damage_count >= 3:
@@ -136,8 +130,8 @@ with right:
             severity = "MEDIUM"
         elif damage_count >= 5:
             severity = "HIGH"
-        # ==========================================================
 
+        # ================= SUMMARY =================
         st.markdown("### 📌 Summary")
         c1, c2, c3 = st.columns(3)
         c1.metric("Damage Count", damage_count)
@@ -148,11 +142,10 @@ with right:
             st.success("✅ No road damage detected")
         else:
             st.error(f"🚨 {damage_count} damage(s) detected")
-            st.markdown("**Detected Types:**")
             for d in unique_damages:
                 st.markdown(f"- 🛑 {d.upper()}")
 
-        # ================= SAVE TO MYSQL =================
+        # ================= SAVE TO DB =================
         try:
             conn = get_connection()
             cursor = conn.cursor()
@@ -182,4 +175,4 @@ with right:
             st.error(f"Database error: {e}")
 
     else:
-        st.info("Upload an image and click **Detect Road Damage**")
+        st.info("Upload an image and click Detect Road Damage")

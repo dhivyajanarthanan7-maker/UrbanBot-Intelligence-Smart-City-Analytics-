@@ -1,31 +1,38 @@
-# virtual environments
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Virtual env
 venv/
 .venv/
 
-# python cache
-__pycache__/
-*.pyc
-
-# secrets
+# Secrets
 .env
+*.env
 
-# datasets (CRITICAL)
-data/
-images/
-eg_image/
+# Streamlit
+.streamlit/
+
+# uploads & datasets
 uploads/
-
-# models
-models/
+data/
+*.csv
 *.pt
 *.pth
-*.h5
-*.pkl
-*.joblib
+models/
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
-# notebooks
-.ipynb_checkpoints/
+# IDE
+.vscode/
+.idea/
+eg_image/
+images/
+models/
+*.pt
+uploads/

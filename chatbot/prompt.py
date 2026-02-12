@@ -1,24 +1,28 @@
-def build_prompt(context, question):
+# chatbot/prompt.py
+
+def build_prompt(question, context):
+
+    context_text = str(context)
+
     return [
         {
             "role": "system",
             "content": (
-                "You are UrbanBot, a Smart City AI Assistant. "
-                "Answer ONLY using the provided database data. "
-                "If data is insufficient, clearly say so."
+                "You are UrbanBot, a Smart City AI Assistant.\n"
+                "You MUST answer ONLY using the database results provided.\n"
+                "Do NOT invent information.\n"
+                "If the database data is empty, say: 'No recent data available.'\n"
+                "Always provide a short summary and practical recommendations."
             )
         },
         {
             "role": "user",
             "content": f"""
-DATABASE DATA:
-{context}
+DATABASE RESULTS:
+{context_text}
 
-QUESTION:
+USER QUESTION:
 {question}
-
-Provide a clear summary and recommendations.
 """
         }
     ]
-

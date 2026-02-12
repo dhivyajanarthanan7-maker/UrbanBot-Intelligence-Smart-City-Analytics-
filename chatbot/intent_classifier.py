@@ -1,11 +1,14 @@
+# chatbot/intent_classifier.py
+
 from .llm_client import ask_llm
+
 
 def classify_intent(question: str) -> str:
 
     prompt = f"""
 You are an intent classifier for a Smart City AI system.
 
-Classify the user query into ONE of these categories:
+Classify the user query into EXACTLY ONE of these categories:
 
 traffic
 accident
@@ -14,15 +17,18 @@ crowd
 road_damage
 complaint
 
-Return ONLY the single word category.
+Return ONLY the category word. No explanation.
 
 User Question:
 {question}
 """
 
     response = ask_llm([
-        {"role": "system", "content": "You only classify the intent."},
+        {"role": "system", "content": "You only classify intent. Return one word."},
         {"role": "user", "content": prompt}
-    ], temperature=0)
+    ])
 
-    return response.lower().strip()
+    if not response:
+        return "unknown"
+
+    return response.strip().lower()

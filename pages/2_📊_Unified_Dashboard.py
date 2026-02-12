@@ -1,14 +1,9 @@
 import streamlit as st
-import mysql.connector
 import pandas as pd
-import time
-st.set_page_config(page_title="Unified City Dashboard", layout="wide")
+import mysql.connector
+from db import get_connection
 
-AUTO_REFRESH_SECONDS = 30
-time.sleep(0.1)
-st.experimental_rerun() if st.session_state.get("refresh") else None
-
-# ================= PAGE CONFIG =================
+# ================= PAGE CONFIG (ONLY ONCE & FIRST) =================
 st.set_page_config(
     page_title="Unified City Dashboard",
     page_icon="📊",
@@ -17,28 +12,21 @@ st.set_page_config(
 
 st.title("📊 Smart City – Unified Dashboard")
 st.caption("Live city status powered by integrated AI modules")
-
 st.divider()
 
-# ================= DB CONNECTION =================
-def get_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="urban_user",
-        password="Urban@123",
-        database="urban_bot",
-        auth_plugin="mysql_native_password"
-    )
-
-
+# ================= SAFE DB FETCH FUNCTION =================
 def fetch_one(query):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(query)
-    result = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    return result[0] if result and result[0] is not None else 0
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return result[0] if result and result[0] is not None else 0
+    except Exception as e:
+        st.warning("Database temporarily unavailable...")
+        return 0
 
 # ================= KPI METRICS =================
 st.subheader("🚨 City Status Overview")
@@ -51,7 +39,7 @@ accidents_today = fetch_one("""
     WHERE DATE(created_at) = CURDATE()
 """)
 
-# Congested roads (traffic)
+# Congested roads
 congested_roads = fetch_one("""
     SELECT COUNT(*) FROM traffic_events
     WHERE congestion_level IN ('HIGH', 'SEVERE')
@@ -69,7 +57,7 @@ avg_aqi = fetch_one("""
     FROM air_quality_predictions
 """)
 
-# Negative complaints %
+# Complaints
 total_complaints = fetch_one("""
     SELECT COUNT(*) FROM citizen_complaints
 """)
@@ -84,6 +72,7 @@ negative_percent = (
     if total_complaints > 0 else 0
 )
 
+# Metrics UI
 col1.metric("🚑 Accidents Today", accidents_today)
 col2.metric("🚦 Congested Roads", congested_roads)
 col3.metric("👥 High Crowd Zones", high_crowd_zones)
@@ -139,22 +128,14 @@ st.bar_chart(df)
 
 st.divider()
 
-def severity_color(severity):
-    return {
-        "HIGH": "🔴",
-        "MEDIUM": "🟠",
-        "LOW": "🟢"
-    }.get(severity, "⚪")
-
-
 # ================= SUMMARY =================
 st.subheader("🧠 Decision Summary")
 
 st.markdown("""
-- Accident and traffic risks are monitored in real time  
-- Crowd density alerts help prevent unsafe gatherings  
-- Air quality data drives health advisories  
-- Citizen complaints highlight service-level issues  
+- Accident and traffic risks are monitored in real time
+- Crowd density alerts help prevent unsafe gatherings
+- Air quality data drives health advisories
+- Citizen complaints highlight service-level issues
 """)
 
 st.success("Unified dashboard successfully integrated with live database data.")
