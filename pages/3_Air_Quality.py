@@ -21,8 +21,13 @@ def load_dataset():
         df = pd.read_sql("SELECT * FROM aqi_locations", conn)
         conn.close()
 
-        df = df.dropna(subset=["state", "city", "station"])
+        # keep lowercase columns
         df.columns = df.columns.str.lower()
+
+        # 🔴 IMPORTANT FIX (prevents crash)
+        df["pollutant_id"] = df["pollutant_id"].astype(str)
+
+        df = df.dropna(subset=["state", "city", "station"])
 
         return df
 
@@ -104,26 +109,25 @@ if st.button("⚡ Predict AQI Level", use_container_width=True):
 
     aqi_value, category, color = calculate_aqi(values)
 
-    if aqi_value is None:
-        st.warning("No valid pollutant values.")
-        st.stop()
-
-    # ---------- SHOW RESULT ----------
     st.markdown("## 📊 AQI Result")
 
     c1, c2 = st.columns(2)
     c1.metric("AQI Value", round(aqi_value, 2))
-    c2.markdown(f"<h3 style='color:{color};'>⚠ {category}</h3>", unsafe_allow_html=True)
+    c2.markdown(
+        f"<h3 style='color:{color};'>⚠ {category}</h3>",
+        unsafe_allow_html=True
+    )
 
+    # DONUT
     donut_df = pd.DataFrame({
-        "Pollutant": list(values.keys()),
-        "Value": list(values.values())
+        "Pollutant": values.keys(),
+        "Value": values.values()
     })
 
-    fig = px.pie(donut_df, names="Pollutant", values="Value", hole=0.55, title="Pollutant Contribution")
+    fig = px.pie(donut_df, names="Pollutant", values="Value", hole=0.55)
     st.plotly_chart(fig, use_container_width=True)
 
-    # ---------- SAVE TO DATABASE ----------
+    # ================= SAVE TO DB =================
     try:
         conn = get_connection()
 
@@ -134,15 +138,16 @@ if st.button("⚡ Predict AQI Level", use_container_width=True):
 
             insert_query = """
             INSERT INTO air_quality_predictions
-            (city, area, pm25, pm10, no2, so2, co, o3, nh3, aqi_value, aqi_category)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            (city, area, pm25, pm10, no2, so2, co, o3, nh3, aqi_category)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             """
 
+            # 🔴 FIXED PARAM COUNT (10 values exactly)
             cursor.execute(insert_query, (
                 city, area,
                 values["PM2.5"], values["PM10"], values["NO2"],
                 values["SO2"], values["CO"], values["OZONE"],
-                values["NH3"], aqi_value, category
+                values["NH3"], category
             ))
 
             conn.commit()

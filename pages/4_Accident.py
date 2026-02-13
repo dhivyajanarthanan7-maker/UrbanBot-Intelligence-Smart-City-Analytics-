@@ -6,20 +6,21 @@ from datetime import datetime
 import cv2
 import numpy as np
 from db import get_connection
-from model_manager import get_model  # IMPORTANT
+from model_manager import get_model
 
-# ================= ENV VARIABLES =================
-EMAIL_USER = os.getenv("EMAIL_USER")
-EMAIL_PASS = os.getenv("EMAIL_PASS")
-EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
-
-MODEL_PATH = "models/accident_best.pt"
+# ================= MODEL CONFIG (FIXED ONLY) =================
+MODEL_NAME = "accident"
+MODEL_PATH = "models/accident_best.pt"   # MUST match your models folder
 CONF_THRESHOLD = 0.25
 
 st.set_page_config(page_title="Accident – UrbanBot", layout="wide")
 st.title("🚑 Accident Detection System")
 
-# ================= EMAIL FUNCTION =================
+# ================= EMAIL CONFIG (UNCHANGED) =================
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASS = os.getenv("EMAIL_PASS")
+EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER")
+
 def send_email_alert(subject, body):
     if not EMAIL_USER or not EMAIL_PASS or not EMAIL_RECEIVER:
         st.info("📧 Email alerts disabled")
@@ -40,7 +41,7 @@ def send_email_alert(subject, body):
     except Exception:
         st.warning("Email failed (safe to ignore)")
 
-# ================= CITY DATA =================
+# ================= CITY DATA (UNCHANGED) =================
 CITY_DATA = {
     "Chennai": ["Guindy", "T Nagar", "Velachery", "Tambaram"],
     "Bangalore": ["Electronic City", "Whitefield"],
@@ -62,8 +63,9 @@ with col2:
 # ================= MAIN =================
 if image_file and st.button("🚨 Detect Accident"):
 
+    # -------- FIXED MODEL LOADING --------
     with st.spinner("Loading Accident AI model..."):
-        model = get_model(MODEL_PATH)
+        model = get_model(MODEL_NAME, MODEL_PATH)
 
     img_bytes = np.asarray(bytearray(image_file.read()), dtype=np.uint8)
     image = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
@@ -74,7 +76,7 @@ if image_file and st.button("🚨 Detect Accident"):
     vehicle_count = len(boxes)
     avg_conf = float(boxes.conf.mean()) if vehicle_count > 0 else 0.0
 
-    # severity
+    # ================= SEVERITY LOGIC (UNCHANGED) =================
     if vehicle_count == 0:
         severity = "No Accident"
     elif vehicle_count == 1:
@@ -91,7 +93,7 @@ if image_file and st.button("🚨 Detect Accident"):
 
     preview.image(results[0].plot(), channels="BGR", use_container_width=True)
 
-    # save DB
+    # ================= DATABASE SAVE (UNCHANGED) =================
     try:
         conn = get_connection()
         cur = conn.cursor()
@@ -111,11 +113,12 @@ if image_file and st.button("🚨 Detect Accident"):
     except Exception as e:
         st.error(f"DB Error: {e}")
 
-    # email
+    # ================= EMAIL ALERT (UNCHANGED) =================
     if severity in ["Moderate","Severe"]:
         send_email_alert(
             "UrbanBot Accident Alert",
             f"City:{city}\nArea:{area}\nSeverity:{severity}\nConfidence:{avg_conf:.2f}"
         )
+
 else:
     st.info("Upload image and click Detect Accident")

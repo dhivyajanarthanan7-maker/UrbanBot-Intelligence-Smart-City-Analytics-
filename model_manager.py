@@ -1,24 +1,26 @@
-# model_manager.py
+import os
 from ultralytics import YOLO
-import gc
 
-_current_model = None
-_current_path = None
+# cache models in memory
+_loaded_models = {}
 
-def get_model(model_path: str):
-    global _current_model, _current_path
+def get_model(model_name, model_path):
+    """
+    Loads YOLO model only once and reuses it across pages.
+    """
 
-    # If same model already loaded → reuse
-    if _current_model is not None and _current_path == model_path:
-        return _current_model
+    # already loaded
+    if model_name in _loaded_models:
+        return _loaded_models[model_name]
 
-    # If different model → unload previous model
-    if _current_model is not None:
-        del _current_model
-        gc.collect()
+    # check path
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found: {model_path}")
 
-    # Load new model
-    _current_model = YOLO(model_path)
-    _current_path = model_path
+    # load model
+    model = YOLO(model_path)
 
-    return _current_model
+    # cache it
+    _loaded_models[model_name] = model
+
+    return model
