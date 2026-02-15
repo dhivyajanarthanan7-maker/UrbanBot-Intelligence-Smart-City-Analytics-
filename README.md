@@ -1,4 +1,4 @@
-# 🏙️ UrbanBot – Smart City Intelligence Platform
+# 🏙️ UrbanBot – Smart City Intelligence 
 
 UrbanBot is an end-to-end **AI-powered Smart City Intelligence System** designed to monitor, analyze, and assist urban infrastructure management in real time.
 
@@ -14,6 +14,20 @@ It integrates **Computer Vision, Machine Learning, NLP, MySQL, and LLM-based ana
 - 🖥️ Production-style Streamlit UI
 ## 🧩 Core Modules
 ### 1️⃣ Smart City – Unified Dashboard
+
+🌐 Live Cloud Deployment
+
+The system is fully deployed on an AWS EC2 cloud server and accessible via the public internet.
+
+🔴 Live Application:
+http://15.207.178.9:8501
+
+The AI models run on a remote cloud server and perform real-time inference.
+No local installation is required — the application works directly from a browser.
+
+Cloud Architecture
+
+User Browser → Internet → AWS EC2 Server → Streamlit App → AI Models → MySQL Database
 
 Centralized command center displaying live city-wide metrics.
 
