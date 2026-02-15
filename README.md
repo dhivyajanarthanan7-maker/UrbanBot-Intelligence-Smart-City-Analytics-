@@ -13,7 +13,6 @@ It integrates **Computer Vision, Machine Learning, NLP, MySQL, and LLM-based ana
 - 🤖 LLM-powered chatbot for city insights
 - 🖥️ Production-style Streamlit UI
 ## 🧩 Core Modules
-### 1️⃣ Smart City – Unified Dashboard
 
 🌐 Live Cloud Deployment
 
@@ -28,6 +27,8 @@ No local installation is required — the application works directly from a brow
 Cloud Architecture
 
 User Browser → Internet → AWS EC2 Server → Streamlit App → AI Models → MySQL Database
+
+### 1️⃣ Smart City – Unified Dashboard
 
 Centralized command center displaying live city-wide metrics.
 
@@ -107,6 +108,11 @@ LLM-powered assistant for city administrators.
 **Dhivya J**  
 AI / ML Engineer | Smart City Systems | Computer Vision | NLP  
 
+
+⚠️ Note
+
+The live server runs on a limited cloud instance (AWS free tier).
+If the application takes a few seconds to load, please wait — the AI models are initializing on first request.
 .
 
 
