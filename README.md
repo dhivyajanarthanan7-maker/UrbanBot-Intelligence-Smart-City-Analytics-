@@ -93,7 +93,7 @@ LLM-powered assistant for city administrators.
 **Dhivya J**  
 AI / ML Engineer | Smart City Systems | Computer Vision | NLP  
 
-This project was built as a **real-world AI system prototype**, not a demo toy project.
+.
 
 
 
