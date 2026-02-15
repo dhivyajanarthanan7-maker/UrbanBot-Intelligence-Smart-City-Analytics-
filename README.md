@@ -12,8 +12,8 @@ It integrates **Computer Vision, Machine Learning, NLP, MySQL, and LLM-based ana
 - 📧 Automated email alerts for critical events
 - 🤖 LLM-powered chatbot for city insights
 - 🖥️ Production-style Streamlit UI
-## 🧩 Core Modules
 
+ 
 🌐 Live Cloud Deployment
 
 The system is fully deployed on an AWS EC2 cloud server and accessible via the public internet.
@@ -28,6 +28,7 @@ Cloud Architecture
 
 User Browser → Internet → AWS EC2 Server → Streamlit App → AI Models → MySQL Database
 
+## 🧩 Core Modules
 ### 1️⃣ Smart City – Unified Dashboard
 
 Centralized command center displaying live city-wide metrics.
